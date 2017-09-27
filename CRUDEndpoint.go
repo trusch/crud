@@ -85,12 +85,18 @@ func (endpoint *Endpoint) handleGet(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 		return
 	}
-	io.Copy(w, reader)
+	log.Debug("got reader")
+	_, err = io.Copy(w, reader)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
 	reader.Close()
 }
 
 func (endpoint *Endpoint) handleList(w http.ResponseWriter, r *http.Request) {
-	log.Debugf("GET request to %v", r.URL)
+	log.Debugf("GET request to list", r.URL)
 	keys, err := endpoint.store.List(endpoint.prefix)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -200,6 +206,7 @@ func (endpoint *Endpoint) handlePatch(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 		return
 	}
+	defer writer.Close()
 	encoder := json.NewEncoder(io.MultiWriter(writer, w))
 	encoder.Encode(oldObject)
 }
