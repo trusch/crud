@@ -29,12 +29,12 @@ func (endpoint *Endpoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // NewEndpoint constructs a new handler instances
 func NewEndpoint(prefix string, store streamstore.Storage) http.Handler {
 	endpoint := &Endpoint{mux.NewRouter(), store, prefix}
-	endpoint.router.Path(fmt.Sprintf("/%v", prefix)).Methods("POST").HandlerFunc(endpoint.handlePost)
-	endpoint.router.Path(fmt.Sprintf("/%v", prefix)).Methods("GET").HandlerFunc(endpoint.handleList)
-	endpoint.router.Path(fmt.Sprintf("/%v/{id}", prefix)).Methods("GET").HandlerFunc(endpoint.handleGet)
-	endpoint.router.Path(fmt.Sprintf("/%v/{id}", prefix)).Methods("PUT").HandlerFunc(endpoint.handlePut)
-	endpoint.router.Path(fmt.Sprintf("/%v/{id}", prefix)).Methods("PATCH").HandlerFunc(endpoint.handlePatch)
-	endpoint.router.Path(fmt.Sprintf("/%v/{id}", prefix)).Methods("DELETE").HandlerFunc(endpoint.handleDel)
+	endpoint.router.Path("/").Methods("POST").HandlerFunc(endpoint.handlePost)
+	endpoint.router.Path("/").Methods("GET").HandlerFunc(endpoint.handleList)
+	endpoint.router.Path("/{id}").Methods("GET").HandlerFunc(endpoint.handleGet)
+	endpoint.router.Path("/{id}").Methods("PUT").HandlerFunc(endpoint.handlePut)
+	endpoint.router.Path("/{id}").Methods("PATCH").HandlerFunc(endpoint.handlePatch)
+	endpoint.router.Path("/{id}").Methods("DELETE").HandlerFunc(endpoint.handleDel)
 	return endpoint
 }
 

@@ -35,31 +35,31 @@ var _ = Describe("CRUDEndpoint", func() {
 
 	It("should be possible to post and retrieve data", func() {
 		content := "foobar"
-		code, responseData := post(handler, "/test", content)
+		code, responseData := post(handler, "/", content)
 		Expect(code).To(Equal(http.StatusCreated))
 		Expect(responseData).NotTo(BeEmpty())
-		code, responseData = get(handler, "/test/"+responseData)
+		code, responseData = get(handler, "/"+responseData)
 		Expect(code).To(Equal(http.StatusOK))
 		Expect(responseData).To(Equal(content))
 	})
 
 	It("should be possible to put and retrieve data", func() {
 		content := "foobar"
-		code, responseData := put(handler, "/test/key", content)
+		code, responseData := put(handler, "/key", content)
 		Expect(code).To(Equal(http.StatusOK))
 		Expect(responseData).To(Equal("key"))
-		code, responseData = get(handler, "/test/key")
+		code, responseData = get(handler, "/key")
 		Expect(code).To(Equal(http.StatusOK))
 		Expect(responseData).To(Equal(content))
 	})
 
 	It("should be possible to list data", func() {
 		content := "foobar"
-		put(handler, "/test/key1", content)
-		put(handler, "/test/key2", content)
-		put(handler, "/test/key3", content)
-		put(handler, "/test/key4", content)
-		code, responseData := get(handler, "/test")
+		put(handler, "/key1", content)
+		put(handler, "/key2", content)
+		put(handler, "/key3", content)
+		put(handler, "/key4", content)
+		code, responseData := get(handler, "/")
 		Expect(code).To(Equal(http.StatusOK))
 		list := []string{}
 		err := json.Unmarshal([]byte(responseData), &list)
@@ -70,20 +70,20 @@ var _ = Describe("CRUDEndpoint", func() {
 
 	It("should be possible to delete data", func() {
 		content := "foobar"
-		put(handler, "/test/key1", content)
-		code, _ := del(handler, "/test/key1")
+		put(handler, "/key1", content)
+		code, _ := del(handler, "/key1")
 		Expect(code).To(Equal(http.StatusOK))
-		code, _ = get(handler, "/test/key1")
+		code, _ = get(handler, "/key1")
 		Expect(code).To(Equal(http.StatusNotFound))
 	})
 
 	It("should be possible to patch json data fields", func() {
 		content := `{"a":1,"b":2}`
-		put(handler, "/test/key1", content)
+		put(handler, "/key1", content)
 		patchContent := `{"c":3,"a":4}`
-		code, _ := patch(handler, "/test/key1", patchContent)
+		code, _ := patch(handler, "/key1", patchContent)
 		Expect(code).To(Equal(http.StatusOK))
-		code, resp := get(handler, "/test/key1")
+		code, resp := get(handler, "/key1")
 		Expect(code).To(Equal(http.StatusOK))
 		obj := make(map[string]int)
 		Expect(json.Unmarshal([]byte(resp), &obj)).To(Succeed())
