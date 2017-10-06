@@ -85,7 +85,6 @@ func (endpoint *Endpoint) handleGet(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 		return
 	}
-	log.Debug("got reader")
 	_, err = io.Copy(w, reader)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -96,7 +95,7 @@ func (endpoint *Endpoint) handleGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (endpoint *Endpoint) handleList(w http.ResponseWriter, r *http.Request) {
-	log.Debugf("GET request to list", r.URL)
+	log.Debugf("GET request to %v", r.URL)
 	keys, err := endpoint.store.List(endpoint.prefix)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
